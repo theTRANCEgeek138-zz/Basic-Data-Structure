@@ -1,40 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct StackNode {
+typedef struct stackNode {
 		int VALUE;
-		struct StackNode *LOWERNODE;
-		struct StackNode *UPPERNODE;
+		struct stackNode *LOWER;
 } SNODE;
 
+SNODE *topNode = NULL;
 
-void setNodeData (SNODE *targetNode,int targetValue,SNODE *lowNode,SNODE *upNode) {
-		targetNode->VALUE = targetValue;
-		targetNode->LOWERNODE = lowNode;
-		targetNode->UPPERNODE = upNode;
+//Add Node to the top of the stack
+void addNode (int addVal) {
+	SNODE *newNode = (SNODE*) malloc (sizeof(SNODE));
+	newNode->VALUE = addVal;
+	newNode->LOWER = topNode;
+	//Set the new node as the top Node
+	topNode = newNode;
+}
+
+void printStack() {
+	SNODE *printNode = topNode;
+	while (printNode != NULL) {
+		printf ("%d ",printNode->VALUE);
+		printNode = printNode->LOWER;
+	}
 }
 
 int main() {
-	SNODE *topNode = NULL;
+	//Input	
 	printf ("Input N: ");
 	int n; scanf ("%d",&n);
-
 	for (int i=0;i<n;i++){
 			printf ("no. %d: ",i);
-			int inVal; scanf ("%d",&inVal);
-
-			SNODE *newNode = (SNODE*) malloc (sizeof(SNODE));
-			setNodeData (newNode,inVal,topNode,NULL);
-			if (topNode != NULL) topNode->UPPERNODE = newNode;
-			topNode = newNode;
+			int val; scanf ("%d",&val);
+			addNode (val);
 	}
+	//Output
+	printStack();
 
-	SNODE *currentNode = topNode;
-	while (currentNode != NULL) {
-		printf ("%d ",currentNode->VALUE);
-		currentNode = currentNode->LOWERNODE;
-	}
-
-	printf ("\nEnd of program. Exit!");
+	printf ("\nEnd of program. Exit now.\n");
 	return 0;
 }
