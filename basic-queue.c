@@ -53,23 +53,13 @@ int main() {
 	printf ("Input N: "); scanf ("%d",&n);
 	for (int i=0;i<n;i++) {
 		int newVal;
+		printf ("no. %d: ",i);
 		scanf ("%d",&newVal);
 		addToQueue (newVal);
 	}
 	
 	//Print the queue
 	printQueue();
-	printf ("\n");
-
-	//Process one Item and print the after queue
-	processQueue();
-	printf ("\n");
-	printQueue();
-	printf ("\n");
-
-	//Calculate queue size
-	int size = queueSize();
-	printf ("%d",size);
 
 	printf ("\nEnd of Program, exit now.\n");
 	return 0;
