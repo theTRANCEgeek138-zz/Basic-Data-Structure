@@ -32,6 +32,17 @@ void processQueue () {
 	free (doneItem);
 }
 
+//Calculate the queue size
+int queueSize() {
+	ITEM *currentItem = startItem.NEXT;
+	int size = 0;
+	while (currentItem != NULL) {
+		size++;
+		currentItem = currentItem->NEXT;
+	}
+	return size;
+}
+
 int main() {
 	startItem.VALUE = 0; 
 	startItem.NEXT = NULL;
@@ -54,6 +65,11 @@ int main() {
 	processQueue();
 	printf ("\n");
 	printQueue();
+	printf ("\n");
+
+	//Calculate queue size
+	int size = queueSize();
+	printf ("%d",size);
 
 	printf ("\nEnd of Program, exit now.\n");
 	return 0;
