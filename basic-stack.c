@@ -25,6 +25,16 @@ void printStack() {
 	}
 }
 
+//Calculate stack size
+int stackSize() {
+	SNODE *currentNode = topNode;
+	int size = 0;
+	while (currentNode != NULL) {
+		size++;
+		currentNode = currentNode->LOWER;
+	}
+	return size;
+}
 int main() {
 	//Input	
 	printf ("Input N: ");
@@ -36,7 +46,7 @@ int main() {
 	}
 	//Output
 	printStack();
-
+	
 	printf ("\nEnd of program. Exit now.\n");
 	return 0;
 }
