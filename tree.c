@@ -15,7 +15,7 @@ NODE *ndalloc() {
 	return (NODE*) malloc(sizeof(NODE));
 }
 
-//Create new Root node
+//Create new empty Root node with a value
 NODE *ndRoot(int rtVal) {
 	NODE *newRoot = ndalloc();
 	newRoot->VALUE = rtVal;
@@ -25,68 +25,63 @@ NODE *ndRoot(int rtVal) {
 	return newRoot;
 }
 
-//Add a child to to a node, next to the last existing sibling
-NODE *addChildtoLast (NODE *targetNode,int val) {
-	//If targetNode's pointer is NULL, consider this as an error, return NULL
-	if (targetNode == NULL) return NULL;
-
-	NODE *newNode = ndalloc();
-	newNode->VALUE = val;
-	//Set newNode relatives
-	newNode->PAR = targetNode;
-	newNode->FCHD = NULL;
-	//Find the closest sibling
-	NODE *nearestSib = targetNode->FCHD;
-	if (nearestSib == NULL) 
-		//If first child pointer is NULL, newNode is the first child
-		targetNode->FCHD = newNode;
-	else {
-		while (nearestSib->NXSIB != NULL) nearestSib = nearestSib->NXSIB;
-		nearestSib->NXSIB = newNode;
-	}
-	newNode->NXSIB = NULL;
-	return newNode;
-}
-
-//Add a child to a node, next to specified child node
-NODE *addChildtoPos (NODE *targetNode,NODE *siblingNode,int val) {
-	NODE *newNode = ndalloc(); 
-	newNode->VALUE = val;
-	//Set new node relatives
-	newNode->PAR = targetNode;
-	newNode->FCHD = NULL;
-	if (siblingNode != NULL) {
-		newNode->NXSIB = siblingNode->NXSIB;
-		siblingNode->NXSIB = newNode;
-	} else {
-		//If siblingNode pointer is NULL, it means the new node is added to 1st child position
-		newNode->NXSIB = targetNode->FCHD;
-		targetNode->FCHD = newNode;
-	}
-	return newNode;
-}
-
-NODE *addChildrtoNode (NODE *parentNode,int childrNum) {
+//Add children to Node
+NODE *addChildrtoNode (NODE *targetNode,int childrNum) { //targetNode aka rootNode, parentNode
 	NODE firstChild;
 	firstChild.NXSIB = NULL;
 	NODE *currentNode = &firstChild;
+	//Create childrNum childrens for targetNode
 	for (int i=0;i<childrNum;i++) {
 		NODE *newNode = ndalloc();
 		//Input node value
 		printf ("Node no.%d: ",i);
 		int ndVal;scanf ("%d",&ndVal);
+		//Set relatives
 		newNode->VALUE = ndVal;
-		newNode->PAR = parentNode;
+		newNode->PAR = targetNode;
 		currentNode->NXSIB = newNode;
 		currentNode = newNode;
 	}
-	return firstChild.NXSIB;
+	return firstChild.NXSIB; //Return the pointer to first child
+}
+
+//Create a Tree/Sub-tree, recursively
+NODE *RcreateTree (NODE *targetNode,int childrNum) { //targetNode aka rootNode, parentNode
+	//If childrNum = 0 (no children will be created), return NULL
+	if (childrNum == 0) return NULL;
+	NODE firstChild; firstChild.NXSIB = NULL;
+	NODE *currentNode = &firstChild;
+	//Create childrNum children for targetNode
+	for (int i=0;i<childrNum;i++) {
+		NODE *newNode = ndalloc();
+		//Input node value
+		printf ("Node no.%d: ",i);
+		int ndVal;scanf ("%d",&ndVal);
+		//Set relatives
+		newNode->VALUE = ndVal;
+		newNode->PAR = targetNode;
+		currentNode->NXSIB = newNode;
+		currentNode = newNode;
+	}
+
+	//Create a new sub-tree rooted by children no.0 -> no. (childrNum-1)
+	currentNode = firstChild.NXSIB;
+	for (int i=0;i<childrNum;i++) {
+		printf ("Child no.%d:\n",i);
+		printf ("How many child(s): "); int ndChildr;scanf("%d",&ndChildr);
+		//Create Sub-tree for current node
+		RcreateTree (currentNode,ndChildr);
+		//Move to the next sibling node
+		currentNode = currentNode->NXSIB;
+	}
 }
 
 int main() {
 	//Initiate startNode
 	startNode = NULL;
-	printf ("%d",startNode->VALUE);
+	
+	//Test RcreateTree
+	startNode = RcreateTree (NULL,1);
 	printf ("\nEnd of Program. Exit now\n");
 	return 0;
 }
