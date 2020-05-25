@@ -3,70 +3,83 @@
 
 typedef struct element {
 	int VALUE;
-	struct element *FCHD;
-	struct element *NXSIB;
-	struct element *PAR;
+	struct element *FCHD; //First child Node pointer
+	struct element *NXSIB;//Next sibling Node pointer
+	struct element *PAR;  //Parent Node pointer
 } NODE;
 
-NODE startNode;
-int maxDepth;
+NODE *startNode;
 
-//Add a child to to a node, next to the last existing sibling
-NODE *addChildtoLast (NODE *parentNode,int val) {
-	NODE *newNode = (NODE*) malloc(sizeof(NODE));
-	newNode->VALUE = val;
-	//Set newNode relatives
-	newNode->PAR = parentNode;
-	newNode->FCHD = NULL;
-	//Find the closest sibling
-	NODE *nearestSib = parentNode->FCHD;
-	if (nearestSib == NULL) 
-		//If first child pointer is NULL, newNode is the first child
-		parentNode->FCHD = newNode;
-	else {
-		while (nearestSib != NULL) nearestSib = nearestSib->NXSIB;
-		nearestSib->NXSIB = newNode;
-	}
-	newNode->NXSIB = NULL;
-	return newNode;
+//Quick memory allocating function for "NODE" type
+NODE *ndalloc() {
+	return (NODE*) malloc(sizeof(NODE));
 }
 
-//Add a sibling to a node, next to specified sibling node
-NODE *addSiblingtoPos (NODE *parentNode,NODE *siblingNode,int val) {
-	NODE *newNode = (NODE*) malloc(sizeof(NODE));
-	newNode->VALUE = val;
-	newNode->PAR = parentNode;
-	newNode->FCHD = NULL;
-	//Set new node relatives
-	if (siblingNode != NULL) {
-		newNode->NXSIB = siblingNode->NXSIB;
-		siblingNode->NXSIB = newNode;
-	} else {
-		//If siblingNode pointer is NULL, it means the new node is added to 1st child position
-		newNode->NXSIB = parentNode->FCHD;
-		parentNode->FCHD = newNode;
-	}
-	return newNode;
+//Create new empty Root node with a value
+NODE *ndRoot(int rtVal) {
+	NODE *newRoot = ndalloc();
+	newRoot->VALUE = rtVal;
+	newRoot->PAR = NULL;
+	newRoot->NXSIB = NULL;
+	newRoot->FCHD = NULL;
+	return newRoot;
 }
 
-//Create Tree or Sub-tree starts with specified ROOT node
-void initTree (NODE *rootNode,int currentDepth) {
-	if (currentDepth == maxDepth) return;
-	printf ("How many children: ");
-	int childrNum; scanf ("%d",&childrNum);
-	NODE *newNode = NULL;
-	//Adding "childrNum" children to the root node
+//Add children to Node
+NODE *addChildrtoNode (NODE *targetNode,int childrNum) { //targetNode aka rootNode, parentNode
+	NODE firstChild;
+	firstChild.NXSIB = NULL;
+	NODE *currentNode = &firstChild;
+	//Create childrNum childrens for targetNode
 	for (int i=0;i<childrNum;i++) {
-		printf ("Depth %d\nChild no.%d: ",currentDepth,i);
-		int childVal; scanf ("%d",&childVal);
-		newNode = addSiblingtoPos (rootNode,newNode,childVal);
-		initTree (newNode,currentDepth+1);
+		NODE *newNode = ndalloc();
+		//Input node value
+		printf ("Node no.%d: ",i);
+		int ndVal;scanf ("%d",&ndVal);
+		//Set relatives
+		newNode->VALUE = ndVal;
+		newNode->PAR = targetNode;
+		currentNode->NXSIB = newNode;
+		currentNode = newNode;
+	}
+	return firstChild.NXSIB; //Return the pointer to first child
+}
+
+//Create a Tree/Sub-tree, recursively
+NODE *RcreateTree (NODE *targetNode,int childrNum) { //targetNode aka rootNode, parentNode
+	//If childrNum = 0 (no children will be created), return NULL
+	if (childrNum == 0) return NULL;
+	NODE firstChild; firstChild.NXSIB = NULL;
+	NODE *currentNode = &firstChild;
+	//Create childrNum children for targetNode
+	for (int i=0;i<childrNum;i++) {
+		NODE *newNode = ndalloc();
+		//Input node value
+		printf ("Node no.%d: ",i);
+		int ndVal;scanf ("%d",&ndVal);
+		//Set relatives
+		newNode->VALUE = ndVal;
+		newNode->PAR = targetNode;
+		currentNode->NXSIB = newNode;
+		currentNode = newNode;
+	}
+
+	//Create a new sub-tree rooted by children no.0 -> no. (childrNum-1)
+	currentNode = firstChild.NXSIB;
+	for (int i=0;i<childrNum;i++) {
+		printf ("Child no.%d:\n",i);
+		printf ("How many child(s): "); int ndChildr;scanf("%d",&ndChildr);
+		//Create Sub-tree for current node
+		RcreateTree (currentNode,ndChildr);
+		//Move to the next sibling node
+		currentNode = currentNode->NXSIB;
 	}
 }
 
 int main() {
-	scanf ("%d",&maxDepth);
-	initTree (&startNode,0);
-	printf ("End of Program. Exit now\n");
+	//Initiate startNode
+	startNode = NULL;
+	
+	printf ("\nEnd of Program. Exit now\n");
 	return 0;
 }
