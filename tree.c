@@ -80,8 +80,6 @@ int main() {
 	//Initiate startNode
 	startNode = NULL;
 	
-	//Test RcreateTree
-	startNode = RcreateTree (NULL,1);
 	printf ("\nEnd of Program. Exit now\n");
 	return 0;
 }
